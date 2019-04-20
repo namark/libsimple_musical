@@ -23,10 +23,7 @@ TARGETS	:= $(SOURCES:%.cpp=$(DISTDIR)/%)
 OBJECTS	:= $(SOURCES:%.cpp=$(TEMPDIR)/%.o)
 DEPENDS	:= $(OBJECTS:.o=.d)
 
-build: make_parent $(TARGETS)
-
-make_parent:
-	make -C ..
+build: $(TARGETS)
 
 $(DISTDIR)/%: $(TEMPDIR)/%.o ../out/libsimple_musical.a $(LDARCH) | $(DISTDIR)
 	$(CXX) $(LDFLAGS) $< $(LDLIBS) -o $@
@@ -54,4 +51,4 @@ distclean: clean
 -include $(DEPENDS)
 
 .PRECIOUS : $(OBJECTS)
-.PHONY : clean distclean make_parent
+.PHONY : clean distclean
