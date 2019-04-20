@@ -1,8 +1,9 @@
-#ifndef SIMPLE_MUSICAL_SPEC_H
-#define SIMPLE_MUSICAL_SPEC_H
+#ifndef SIMPLE_MUSICAL_SPEC_HPP
+#define SIMPLE_MUSICAL_SPEC_HPP
 #include <SDL2/SDL.h>
 
 #include "simple/support/enum_flags_operators.hpp"
+#include "simple/support/enum.hpp"
 
 #include "format.h"
 
@@ -76,21 +77,44 @@ namespace simple::musical
 			hammerfall_dsp_9632 = _64k,
 		}; };
 
-		spec(int frequency = frequency::standard, format = format::int16, channels = channels::stereo, size_t samples_log2 = 10);
+		constexpr spec
+		(
+			int frequency = frequency::standard,
+			format format = format::int16,
+			channels channels = channels::stereo
+		)
+		: raw{frequency, support::to_integer(format), support::to_integer(channels)}
+		{ }
 
-		int get_frequency() const;
-		spec& set_frequency(int);
+		constexpr int get_frequency() const { return raw.freq; }
+		constexpr spec& set_frequency(int frequency)
+		{
+			raw.freq = frequency;
+			return *this;
+		}
 
-		format get_format() const;
-		spec& set_format(format);
+		constexpr format get_format() const { return static_cast<format>(raw.format); }
+		constexpr spec& set_format(format format)
+		{
+			raw.format = support::to_integer(format);
+			return *this;
+		}
 
-		channels get_channels() const;
-		spec& set_channels(channels);
+		constexpr channels get_channels() const { return static_cast<channels>(raw.channels); }
+		constexpr spec& set_channels(channels channels)
+		{
+			raw.channels = support::to_integer(channels);
+			return *this;
+		}
 
-		size_t get_samples_log2() const;
-		spec& set_samples_log2(size_t);
-
-		auto get_samples() const;
+		constexpr friend bool operator==(const spec& one, const spec& other)
+		{
+			return
+				one.get_format() == other.get_format() &&
+				one.get_frequency() == other.get_frequency() &&
+				one.get_channels() == other.get_channels();
+		}
+		constexpr friend bool operator!=(const spec& one, const spec& other) { return !(one == other); }
 
 		private:
 		SDL_AudioSpec raw;

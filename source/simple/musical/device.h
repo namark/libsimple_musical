@@ -5,7 +5,7 @@
 #include "simple/sdlcore/utils.hpp"
 #include "simple/support/enum_flags_operators.hpp"
 
-#include "spec.h"
+#include "spec.hpp"
 
 namespace simple::musical
 {
@@ -16,10 +16,12 @@ namespace simple::musical
 	struct common_device_parameters
 	{
 		spec desired;
+		uint_least8_t samples_log2 = 10;
 		spec::changes allowed = spec::changes::none;
 		const char* name = nullptr;
 
 		Parameters& set_spec(const spec& desired, spec::changes allowed = spec::changes::none);
+		Parameters& set_samples_log2(uint_least8_t log2);
 		Parameters& set_name(const char* name);
 
 #if SDL_VERSION_ATLEAST(2,0,5)
@@ -75,6 +77,8 @@ namespace simple::musical
 		device(parameters params);
 
 		const spec& obtained() const noexcept;
+		uint_least8_t get_samples_log2() const;
+		auto get_samples() const;  // -> some integer type
 
 		void lock() noexcept;
 		void unlock() noexcept;
@@ -106,6 +110,7 @@ namespace simple::musical
 			device(device::parameters
 			{
 				params.desired,
+				params.samples_log2,
 				params.allowed,
 				params.name,
 #if SDL_VERSION_ATLEAST(2,0,5)
@@ -117,7 +122,7 @@ namespace simple::musical
 		{}
 	};
 
-#if SDL_VERSION_ATLEAST(2,0,5)
+#if SDL_VERSION_ATLEAST(2,0,4)
 	class device_with_queue : public device
 	{
 		public:

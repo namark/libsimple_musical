@@ -1,7 +1,11 @@
 #include "device.h"
 #include "simple/support/enum.hpp"
+#include "simple/support/binary.hpp"
 
 using simple::support::to_integer;
+using simple::support::count_trailing_zeros;
+using simple::support::count_ones;
+using simple::support::bit_count;
 
 namespace simple::musical
 {
@@ -11,6 +15,13 @@ namespace simple::musical
 	{
 		this->desired = desired;
 		this->allowed = allowed;
+		return static_cast<P&>(*this);
+	}
+
+	template <typename P>
+	P& common_device_parameters<P>::set_samples_log2(uint_least8_t log2)
+	{
+		this->samples_log2 = log2;
 		return static_cast<P&>(*this);
 	}
 
@@ -71,6 +82,7 @@ namespace simple::musical
 		false,
 #endif
 		(
+			params.desired.raw.samples = 1ull << params.samples_log2,
 			params.desired.raw.callback = params.callback,
 			params.desired.raw.userdata = params.data,
 			&params.desired.raw
@@ -78,11 +90,29 @@ namespace simple::musical
 		&_obtained.raw,
 		to_integer(params.allowed)
 	)))
-	{ }
+	{
+		assert(params.samples_log2 < bit_count(_obtained.raw.samples));
+	}
 
 	const spec& device::obtained() const noexcept
 	{
 		return _obtained;
+	}
+
+	constexpr int log2(int pow2)
+	{
+		assert((count_ones(pow2) == 1) && "Input must be a power of 2.");
+		return count_trailing_zeros(pow2);
+	}
+
+	uint_least8_t device::get_samples_log2() const
+	{
+		return log2(_obtained.raw.samples);
+	}
+
+	auto device::get_samples() const
+	{
+		return _obtained.raw.samples;
 	}
 
 	void device::lock() noexcept
@@ -105,7 +135,7 @@ namespace simple::musical
 		pause(!value);
 	}
 
-#if SDL_VERSION_ATLEAST(2,0,5)
+#if SDL_VERSION_ATLEAST(2,0,4)
 	class device_with_queue : public device
 	{
 		public:
@@ -118,6 +148,7 @@ namespace simple::musical
 		device
 		({
 			params.desired,
+			params.samples_log2,
 			params.allowed,
 			params.name,
 #if SDL_VERSION_ATLEAST(2,0,5)
