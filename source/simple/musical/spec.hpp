@@ -119,6 +119,7 @@ namespace simple::musical
 		private:
 		SDL_AudioSpec raw;
 		friend class device;
+		friend class wav;
 	};
 
 } // namespace simple::musical
