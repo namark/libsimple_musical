@@ -5,6 +5,7 @@
 #include "simple/sdlcore/utils.hpp"
 #include "simple/support/enum_flags_operators.hpp"
 
+#include "utils.hpp"
 #include "spec.hpp"
 
 namespace simple::musical
@@ -77,8 +78,9 @@ namespace simple::musical
 		device(parameters params);
 
 		const spec& obtained() const noexcept;
-		uint_least8_t get_samples_log2() const;
-		auto get_samples() const;  // -> some integer type
+		uint_least8_t samples_log2() const noexcept;
+		auto samples() const noexcept;  // -> some integer type
+		uint8_t silence() const noexcept;
 
 		void lock() noexcept;
 		void unlock() noexcept;
@@ -96,10 +98,10 @@ namespace simple::musical
 	template <typename Callback>
 	class device_with_callback : callback_holder<Callback>, public device
 	{
-		static void callback_wrapper(void* data, uint8_t* buffer, int len)
+		static void callback_wrapper(void* data, uint8_t* buf, int len)
 		{
 			device_with_callback& this_device = *static_cast<device_with_callback*>(data);
-			std::invoke(this_device.callback, this_device, buffer, len);
+			std::invoke(this_device.callback, this_device, buffer<int>{buf, len});
 		}
 
 		public:

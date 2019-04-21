@@ -105,14 +105,19 @@ namespace simple::musical
 		return count_trailing_zeros(pow2);
 	}
 
-	uint_least8_t device::get_samples_log2() const
+	uint_least8_t device::samples_log2() const noexcept
 	{
 		return log2(_obtained.raw.samples);
 	}
 
-	auto device::get_samples() const
+	auto device::samples() const noexcept
 	{
 		return _obtained.raw.samples;
+	}
+
+	uint8_t device::silence() const noexcept
+	{
+		return _obtained.raw.silence;
 	}
 
 	void device::lock() noexcept

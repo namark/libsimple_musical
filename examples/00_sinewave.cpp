@@ -22,9 +22,9 @@ int main() try
 			.set_channels(spec::channels::mono)
 			.set_format(format::int8)
 		},
-		[time = float()](auto&, uint8_t* buffer, int len) mutable
+		[time = float()](auto&, auto buffer) mutable
 		{
-			std::generate(buffer, buffer + len, [&]()
+			std::generate(buffer.begin(), buffer.end(), [&]()
 			{
 				time += 0.05;
 				return std::sin(time) * 127;
