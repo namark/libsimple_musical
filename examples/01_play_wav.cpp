@@ -27,7 +27,7 @@ int main(int argc, const char** argv) try
 
 	std::atomic<bool> done = false;
 
-	device_with_callback beeper
+	device_with_callback player
 	(
 		basic_device_parameters{music.obtained()},
 		[&done, &music, i = music.buffer().begin()](auto& device, auto buffer) mutable
@@ -45,7 +45,7 @@ int main(int argc, const char** argv) try
 		}
 	);
 
-	beeper.play();
+	player.play();
 
 	while(!done)
 		std::this_thread::sleep_for(50ms);
