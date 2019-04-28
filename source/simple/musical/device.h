@@ -95,6 +95,11 @@ namespace simple::musical
 	};
 
 
+	// hmmm, if construct the callback first, then if device throws can't move it back,
+	// but if construct it second, it will be destroyed before device which is using it
+	//
+	// construct second and pause device in destructor?
+	// construct first then try/catch and move back?
 	template <typename Callback>
 	class device_with_callback : callback_holder<Callback>, public device
 	{
@@ -107,8 +112,9 @@ namespace simple::musical
 		public:
 		using parameters = basic_device_parameters;
 
-		device_with_callback(parameters params, Callback&& callback) :
-			callback_holder<Callback>{std::forward<Callback>(callback)},
+		template <typename C>
+		device_with_callback(parameters params, C&& callback) :
+			callback_holder<Callback>{std::forward<C>(callback)},
 			device(device::parameters
 			{
 				params.desired,
@@ -123,6 +129,9 @@ namespace simple::musical
 			})
 		{}
 	};
+
+	template <typename C>
+	device_with_callback(basic_device_parameters, C&&) -> device_with_callback<C>;
 
 #if SDL_VERSION_ATLEAST(2,0,4)
 	class device_with_queue : public device
