@@ -24,7 +24,7 @@ namespace simple::musical
 		return _obtained;
 	}
 
-	const class buffer<>& wav::buffer() const noexcept
+	const buffer_view<>& wav::buffer() const noexcept
 	{
 		return _buffer;
 	}

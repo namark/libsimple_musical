@@ -106,7 +106,7 @@ namespace simple::musical
 		static void callback_wrapper(void* data, uint8_t* buf, int len)
 		{
 			device_with_callback& this_device = *static_cast<device_with_callback*>(data);
-			std::invoke(this_device.callback, this_device, buffer<int>{buf, len});
+			std::invoke(this_device.callback, this_device, buffer_view<int>{buf, len});
 		}
 
 		public:

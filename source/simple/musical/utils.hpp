@@ -7,16 +7,18 @@
 namespace simple::musical
 {
 	template <typename SizeType = uint32_t>
-	struct buffer
+	struct buffer_view
 	{
 		using size_type = SizeType;
-		uint8_t* data;
+		using iterator = uint8_t*;
+		using const_iterator = const uint8_t*;
+		iterator data;
 		size_type size;
 
-		constexpr uint8_t* begin() noexcept { return data; }
-		constexpr uint8_t* end() noexcept { return data + size; }
-		constexpr const uint8_t* begin() const noexcept { return data; }
-		constexpr const uint8_t* end() const noexcept{ return data + size; }
+		constexpr iterator begin() noexcept { return data; }
+		constexpr iterator end() noexcept { return data + size; }
+		constexpr const_iterator begin() const noexcept { return data; }
+		constexpr const_iterator end() const noexcept{ return data + size; }
 	};
 
 	inline uint16_t endian_swap(uint16_t value) { return SDL_Swap16(value); }

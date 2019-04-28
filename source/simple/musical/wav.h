@@ -17,7 +17,7 @@ namespace simple::musical
 	{
 		protected:
 		spec _obtained;
-		buffer<> _buffer;
+		buffer_view<> _buffer;
 	};
 
 	class wav : wav_data, public spec_ptr
@@ -26,7 +26,7 @@ namespace simple::musical
 
 		explicit wav(const char* filename);
 		const spec& obtained() const noexcept;
-		const struct buffer<>& buffer() const noexcept;
+		const buffer_view<>& buffer() const noexcept;
 	};
 
 } // namespace simple::musical
