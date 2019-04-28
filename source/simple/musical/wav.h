@@ -24,7 +24,7 @@ namespace simple::musical
 	{
 		public:
 
-		wav(const char* filename);
+		explicit wav(const char* filename);
 		const spec& obtained() const noexcept;
 		const struct buffer<>& buffer() const noexcept;
 	};
