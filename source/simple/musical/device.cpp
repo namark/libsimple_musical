@@ -34,7 +34,7 @@ namespace simple::musical
 
 #if SDL_VERSION_ATLEAST(2,0,5)
 	template<typename P>
-	P& common_device_parameters<P>set_capture(bool capture)
+	P& common_device_parameters<P>::set_capture(bool capture)
 	{
 		this->capture = name;
 		return static_cast<P&>(*this);
@@ -141,14 +141,6 @@ namespace simple::musical
 	}
 
 #if SDL_VERSION_ATLEAST(2,0,4)
-	class device_with_queue : public device
-	{
-		public:
-		struct parameters : public common_device_parameters<parameters>
-		{ };
-
-		void queue(const uint8_t * data, int len);
-	};
 	device_with_queue::device_with_queue(parameters params) :
 		device
 		({
@@ -161,6 +153,23 @@ namespace simple::musical
 #endif
 		})
 	{ }
+
+	bool device_with_queue::queue(const buffer_view<> buffer)
+	{
+		return sdlcore::utils::check_error(
+			SDL_QueueAudio(guts().get().id, buffer.data, buffer.size));
+	}
+
+	size_t device_with_queue::queued()
+	{
+		return SDL_GetQueuedAudioSize(guts().get().id);
+	}
+
+	void device_with_queue::clear()
+	{
+		SDL_ClearQueuedAudio(guts().get().id);
+	}
+
 #endif
 
 } // namespace simple::musical

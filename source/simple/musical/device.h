@@ -40,6 +40,7 @@ namespace simple::musical
 		SDL_AudioDeviceID id;
 		sdl_audio_device_handle(SDL_AudioDeviceID) noexcept;
 		friend class device;
+		friend class device_with_queue;
 		friend class sdl_audio_device_deleter;
 		public:
 
@@ -139,7 +140,8 @@ namespace simple::musical
 		public:
 		using parameters = basic_device_parameters;
 		device_with_queue(parameters params);
-		void queue(const uint8_t * data, int len);
+		bool queue(const buffer_view<>);
+		uint32_t queued();
 		void clear();
 	};
 #endif
