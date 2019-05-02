@@ -160,7 +160,7 @@ namespace simple::musical
 			SDL_QueueAudio(guts().get().id, buffer.data, buffer.size));
 	}
 
-	size_t device_with_queue::queued()
+	uint32_t device_with_queue::queued()
 	{
 		return SDL_GetQueuedAudioSize(guts().get().id);
 	}
