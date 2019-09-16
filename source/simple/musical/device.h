@@ -47,6 +47,9 @@ namespace simple::musical
 		sdl_audio_device_handle(std::nullptr_t = nullptr) noexcept;
 		friend bool operator==(sdl_audio_device_handle, sdl_audio_device_handle) noexcept;
 		friend bool operator!=(sdl_audio_device_handle, sdl_audio_device_handle) noexcept;
+
+		// TODO: remove - not required by standard but emscriptenn 1.38.42 needs it -_-
+		explicit operator bool() noexcept;
 	};
 
 	class sdl_audio_device_deleter

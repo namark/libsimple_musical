@@ -17,6 +17,8 @@ namespace simple::musical
 		this->allowed = allowed;
 		return static_cast<P&>(*this);
 	}
+	template basic_device_parameters& common_device_parameters<basic_device_parameters>::set_spec(const spec&, spec::changes);
+	template device::parameters& common_device_parameters<device::parameters>::set_spec(const spec&, spec::changes);
 
 	template <typename P>
 	P& common_device_parameters<P>::set_samples_log2(uint_least8_t log2)
@@ -24,6 +26,8 @@ namespace simple::musical
 		this->samples_log2 = log2;
 		return static_cast<P&>(*this);
 	}
+	template basic_device_parameters& common_device_parameters<basic_device_parameters>::set_samples_log2(uint_least8_t);
+	template device::parameters& common_device_parameters<device::parameters>::set_samples_log2(uint_least8_t);
 
 	template <typename P>
 	P& common_device_parameters<P>::set_name(const char* name)
@@ -31,14 +35,18 @@ namespace simple::musical
 		this->name = name;
 		return static_cast<P&>(*this);
 	}
+	template  basic_device_parameters& common_device_parameters<basic_device_parameters>::set_name(const char*);
+	template  device::parameters& common_device_parameters<device::parameters>::set_name(const char*);
 
 #if SDL_VERSION_ATLEAST(2,0,5)
 	template<typename P>
 	P& common_device_parameters<P>::set_capture(bool capture)
 	{
-		this->capture = name;
+		this->capture = capture;
 		return static_cast<P&>(*this);
 	}
+	template basic_device_parameters& common_device_parameters<basic_device_parameters>::set_capture(bool);
+	template device::parameters& common_device_parameters<device::parameters>::set_capture(bool);
 #endif
 
 	sdl_audio_device_handle::sdl_audio_device_handle(SDL_AudioDeviceID id) noexcept
@@ -58,6 +66,12 @@ namespace simple::musical
 	bool operator!=(sdl_audio_device_handle one, sdl_audio_device_handle other) noexcept
 	{
 		return !(one == other);
+	}
+
+	// TODO: remove - not required by standard but emscriptenn 1.38.42 needs it -_-
+	sdl_audio_device_handle::operator bool() noexcept
+	{
+		return (*this) != nullptr;
 	}
 
 	void sdl_audio_device_deleter::operator()(pointer handle) noexcept
