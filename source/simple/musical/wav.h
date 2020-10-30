@@ -7,6 +7,8 @@
 namespace simple::musical
 {
 
+	using byte = unsigned char;
+
 	struct wav_deleter
 	{
 		void operator()(SDL_AudioSpec*) const noexcept;
@@ -25,6 +27,7 @@ namespace simple::musical
 		public:
 
 		explicit wav(const char* filename);
+		wav(const byte* buffer, int size);
 		const spec& obtained() const noexcept;
 		const buffer_view<>& buffer() const noexcept;
 	};

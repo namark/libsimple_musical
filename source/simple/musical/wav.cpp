@@ -14,10 +14,23 @@ namespace simple::musical
 		(
 			filename,
 			&_obtained.raw,
-			((_obtained.raw.userdata = _buffer.data), &_buffer.data),
-			&_buffer.size)
-		)
-	{ }
+			&_buffer.data,
+			&_buffer.size
+		))
+	{ guts()->userdata = _buffer.data; }
+
+	wav::wav(const byte* memory, int size)
+		: wav_data{},
+		spec_ptr(SDL_LoadWAV_RW
+		(
+			SDL_RWFromConstMem(memory, size),
+			1,
+			&_obtained.raw,
+			&_buffer.data,
+			&_buffer.size
+		))
+	{ guts()->userdata = _buffer.data; }
+
 
 	const spec& wav::obtained() const noexcept
 	{
